@@ -17,7 +17,7 @@ const app = express();
 app.use(
   cors({
     origin: [
-      "https://interface-monitoring.vercel.app/",
+      "https://interface-monitoring.vercel.app",
       "http://localhost:5173",
     ], // adjust for frontend hosts or set to true for all in dev
     credentials: true,
