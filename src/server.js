@@ -13,20 +13,21 @@ const executionsRoutes = require("./routes/executions");
 const redis = require("./redisClient");
 
 const app = express();
-app.use(helmet());
-app.use(compression());
-app.use(express.json({ limit: "2mb" }));
-app.use(morgan("dev"));
 
 app.use(
   cors({
     origin: [
-      "https://interface-monitoring.vercel.app/",
+      "https://interface-monitoring.vercel.app",
       "http://localhost:5173",
     ], // adjust for frontend hosts or set to true for all in dev
     credentials: true,
   })
 );
+
+app.use(helmet());
+app.use(compression());
+app.use(express.json({ limit: "2mb" }));
+app.use(morgan("dev"));
 
 app.use(limiter);
 
