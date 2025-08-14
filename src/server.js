@@ -20,7 +20,10 @@ app.use(morgan("dev"));
 
 app.use(
   cors({
-    origin: ["http://localhost:5173"], // adjust for frontend hosts or set to true for all in dev
+    origin: [
+      "https://interface-monitoring.vercel.app/",
+      "http://localhost:5173",
+    ], // adjust for frontend hosts or set to true for all in dev
     credentials: true,
   })
 );
