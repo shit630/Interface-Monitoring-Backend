@@ -4,6 +4,7 @@ const { Types } = require("mongoose");
 const ObjectId = Types.ObjectId;
 
 // Helper: build filters from query
+// GET /api/executions?status=FAILED&start=2025-08-01&interfaceName=Order
 function buildFilters(q) {
   const { start, end, status, interfaceName, qtext, minDuration, maxDuration } =
     q;
@@ -41,9 +42,12 @@ function encodeCursor(doc) {
   return Buffer.from(payload).toString("base64");
 }
 
+//GET /api/executions?status=SUCCESS&limit=2&sort=desc
+// /api/interfaces?limit=10&cursor=MjAyNS0wOC0xOVQxMDozMDowMC4wMDBafDY4OWIxYzQzYjI0NTY3ODkw
 exports.listExecutions = async (req, res, next) => {
   try {
-    const limit = Math.min(100, Number(req.query.limit) || 50);
+    const limit = Math.min(Number(req.query.limit) || 10000);
+    console.log(limit);
     const cursor = decodeCursor(req.query.cursor);
     const sort = req.query.sort === "asc" ? 1 : -1;
 
@@ -74,6 +78,7 @@ exports.listExecutions = async (req, res, next) => {
     const docs = await InterfaceExecution.find(query)
       .sort({ startTime: sort, _id: sort })
       .limit(limit + 1)
+      .batchSize(limit + 1)
       .select(
         "interfaceName integrationKey status startTime duration message severity"
       )
@@ -91,6 +96,7 @@ exports.listExecutions = async (req, res, next) => {
   }
 };
 
+//GET /api/summary?range=24h
 exports.getSummary = async (req, res, next) => {
   try {
     const { range = "24h", start, end } = req.query;
